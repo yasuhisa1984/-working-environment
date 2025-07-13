@@ -66,7 +66,6 @@ require("lazy").setup({
 				"gzip",
 				-- "matchit",
 				-- "matchparen",
-				"netrwPlugin",
 				"rplugin",
 				"tarPlugin",
 				"tohtml",
