@@ -21,7 +21,6 @@ return {
 		"neovim/nvim-lspconfig",
 		opts = {
 			inlay_hints = { enabled = false },
-			---@type lspconfig.options
 			servers = {
 				cssls = {},
 				tailwindcss = {
@@ -208,6 +207,8 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		opts = function()
+			table.insert(opts.keys, { "K", false }) -- disable default K keymap
+			table.insert(opts.keys, { "<leader>h", vim.lsp.buf.hover, desc = "LSP Hover" }) -- add custom hover keymap
 			local keys = require("lazyvim.plugins.lsp.keymaps").get()
 			vim.list_extend(keys, {
 				{
