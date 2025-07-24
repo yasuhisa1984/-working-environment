@@ -19,9 +19,11 @@ return {
 	-- lsp servers
 	{
 		"neovim/nvim-lspconfig",
-		opts = {
-			inlay_hints = { enabled = false },
-			servers = {
+		-- `opts`を関数として定義し、デフォルトのoptsテーブルを引数として受け取る
+		opts = function(_, opts)
+			-- 1. サーバー設定をデフォルトのopts.serversにマージする
+			--    vim.tbl_deep_extendを使うことで、既存の設定を上書きせずに追記できる
+			opts.servers = vim.tbl_deep_extend("force", opts.servers or {}, {
 				cssls = {},
 				tailwindcss = {
 					root_dir = function(...)
@@ -30,12 +32,11 @@ return {
 				},
 				intelephense = {
 					root_dir = function(fname)
-						-- composer.json / .git どちらかをプロジェクトルートとする
 						return require("lspconfig.util").root_pattern("composer.json", ".git")(fname) or vim.fn.getcwd()
 					end,
 					settings = {
 						intelephense = {
-							format = { enable = false }, -- フォーマッタは別に任せる場合
+							format = { enable = false },
 							environment = { includePaths = { "vendor" } },
 							stubs = {
 								"apache",
@@ -43,7 +44,7 @@ return {
 								"bz2",
 								"calendar",
 								"com_dotnet",
-								"Core", -- 必須！file_exists, file_get_contentsなど
+								"Core",
 								"ctype",
 								"curl",
 								"date",
@@ -59,7 +60,7 @@ return {
 								"iconv",
 								"imap",
 								"intl",
-								"json", -- 必須！json_encode, json_decode
+								"json",
 								"ldap",
 								"libxml",
 								"mbstring",
@@ -81,8 +82,8 @@ return {
 								"soap",
 								"sockets",
 								"sodium",
-								"SPL", -- 必須！オブジェクト周り
-								"standard", -- 必須！PHP標準関数
+								"SPL",
+								"standard",
 								"superglobals",
 								"tokenizer",
 								"xml",
@@ -93,7 +94,7 @@ return {
 								"zip",
 								"zlib",
 							},
-							files = { maxSize = 5000000 }, -- 5 MB
+							files = { maxSize = 5000000 },
 						},
 					},
 				},
@@ -129,29 +130,15 @@ return {
 				},
 				html = {},
 				yamlls = {
-					settings = {
-						yaml = {
-							keyOrdering = false,
-						},
-					},
+					settings = { yaml = { keyOrdering = false } },
 				},
 				lua_ls = {
-					-- enabled = false,
 					single_file_support = true,
 					settings = {
 						Lua = {
-							workspace = {
-								checkThirdParty = false,
-							},
-							completion = {
-								workspaceWord = true,
-								callSnippet = "Both",
-							},
-							misc = {
-								parameters = {
-									-- "--log-level=trace",
-								},
-							},
+							workspace = { checkThirdParty = false },
+							completion = { workspaceWord = true, callSnippet = "Both" },
+							misc = { parameters = {} },
 							hint = {
 								enable = true,
 								setType = false,
@@ -160,19 +147,11 @@ return {
 								semicolon = "Disable",
 								arrayIndex = "Disable",
 							},
-							doc = {
-								privateName = { "^_" },
-							},
-							type = {
-								castNumberToInteger = true,
-							},
+							doc = { privateName = { "^_" } },
+							type = { castNumberToInteger = true },
 							diagnostics = {
 								disable = { "incomplete-signature-doc", "trailing-space" },
-								-- enable = false,
-								groupSeverity = {
-									strong = "Warning",
-									strict = "Warning",
-								},
+								groupSeverity = { strong = "Warning", strict = "Warning" },
 								groupFileStatus = {
 									["ambiguity"] = "Opened",
 									["await"] = "Opened",
@@ -200,27 +179,30 @@ return {
 						},
 					},
 				},
-			},
-			setup = {},
-		},
-	},
-	{
-		"neovim/nvim-lspconfig",
-		opts = function()
-			table.insert(opts.keys, { "K", false }) -- disable default K keymap
-			table.insert(opts.keys, { "<leader>h", vim.lsp.buf.hover, desc = "LSP Hover" }) -- add custom hover keymap
-			local keys = require("lazyvim.plugins.lsp.keymaps").get()
-			vim.list_extend(keys, {
+			})
+
+			-- 2. 他のトップレベル設定をマージする
+			opts.inlay_hints = { enabled = false }
+
+			opts.keys = opts.keys or {}
+			-- 3. キーマップをデフォルトのopts.keysに追加する
+			vim.list_extend(opts.keys, {
+				{ "n", "K", false }, -- ① 既定の K を無効化
+				{ "n", "<leader>h", vim.lsp.buf.hover, desc = "LSP Hover" },
 				{
+					"n",
 					"gd",
 					function()
-						-- DO NOT RESUSE WINDOW
-						-- require("telescope.builtin").lsp_definitions({ reuse_win = false })
+						-- Telescope を使わず自前で定義へジャンプ
+						vim.lsp.buf.definition()
 					end,
 					desc = "Goto Definition",
 					has = "definition",
 				},
 			})
+
+			-- 4. 最後に、完成したoptsテーブルを必ずreturnする
+			return opts
 		end,
 	},
 }
