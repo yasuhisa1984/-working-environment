@@ -12,3 +12,5 @@ local lspconfig = require("lspconfig")
 lspconfig.intelephense.setup({})
 
 require("config.unmap_lsp_k")
+
+require("oil").setup()
