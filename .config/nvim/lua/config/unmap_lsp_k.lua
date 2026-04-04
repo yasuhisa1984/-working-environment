@@ -5,7 +5,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	group = aug,
 	callback = function(ev)
 		-- LSP が設定する K(Hover) を削除
-		vim.keymap.del("n", "K", { buffer = ev.buf })
+		pcall(vim.keymap.del, "n", "K", { buffer = ev.buf })
 		-- ついでに Hover を <leader>h にバッファローカルで貼り直す
 		vim.keymap.set("n", "<leader>h", vim.lsp.buf.hover, { buffer = ev.buf, desc = "LSP Hover" })
 	end,

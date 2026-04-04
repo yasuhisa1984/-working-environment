@@ -8,7 +8,7 @@ return {
 
 	-- Go forward/backward with square brackets
 	{
-		"echasnovski/mini.bracketed",
+		"nvim-mini/mini.bracketed",
 		event = "BufReadPost",
 		config = function()
 			local bracketed = require("mini.bracketed")
@@ -48,10 +48,10 @@ return {
 	-- ① GitHub Copilot 本体（Lua 実装）
 	{
 		"zbirenbaum/copilot.lua",
+		event = "InsertEnter",
 		cmd = "Copilot",
-		build = ":Copilot auth", -- 初回だけ GitHub 認証
 		opts = {
-			suggestion = { enabled = false }, -- ゴーストテキストは off
+			suggestion = { enabled = false },
 			panel = { enabled = false },
 		},
 	},
