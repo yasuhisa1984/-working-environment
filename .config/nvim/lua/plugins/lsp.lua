@@ -19,6 +19,7 @@ return {
 	-- lsp servers
 	{
 		"neovim/nvim-lspconfig",
+		-- K の上書きは lua/config/unmap_lsp_k.lua で行う（タイミング問題のため）
 		-- `opts`を関数として定義し、デフォルトのoptsテーブルを引数として受け取る
 		opts = function(_, opts)
 			-- 1. サーバー設定をデフォルトのopts.serversにマージする
@@ -187,17 +188,14 @@ return {
 			opts.keys = opts.keys or {}
 			-- 3. キーマップをデフォルトのopts.keysに追加する
 			vim.list_extend(opts.keys, {
-				{ "n", "K", false }, -- ① 既定の K を無効化
-				{ "n", "<leader>h", vim.lsp.buf.hover, desc = "LSP Hover" },
 				{
-					"n",
 					"gd",
 					function()
-						-- Telescope を使わず自前で定義へジャンプ
 						vim.lsp.buf.definition()
 					end,
 					desc = "Goto Definition",
 					has = "definition",
+					mode = "n",
 				},
 			})
 
