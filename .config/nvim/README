@@ -1,0 +1,27 @@
+# PHP を K&R スタイル（{ を同じ行）で自動整形する設定手順
+
+LazyVim + php-cs-fixer + conform.nvim で
+**クラス/メソッドの `{` を同じ行に** 揃える最小構成。
+
+---
+
+## 1. 前提条件
+
+- PHP / Composer がインストール済み
+- Neovim + LazyVim 環境
+
+---
+
+## 2. php-cs-fixer のインストール
+
+```bash
+# 1) グローバルにインストール
+composer global require friendsofphp/php-cs-fixer:^3
+
+# 2) PATH へ追加（zsh の例）
+echo 'export PATH="$(composer global config bin-dir --absolute 2>/dev/null):$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# 3) 動作チェック
+which php-cs-fixer
+php-cs-fixer --version

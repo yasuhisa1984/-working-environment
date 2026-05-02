@@ -3,8 +3,10 @@ if type -q eza
   alias lla "ll -a"
 end
 
-# Inkdrop
-set -gx INKDROP_HOME ~/.inkdrop
+# Tmuxinator
+if type -q tmuxinator
+  alias mux 'tmuxinator'
+end
 
 # Fzf
 set -g FZF_PREVIEW_FILE_CMD "bat --style=numbers --color=always --line-range :500"

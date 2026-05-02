@@ -71,3 +71,11 @@ Pods/
 # Tmux
 .config/tmux/plugins
 
+# Tmuxinator: 個別プロジェクト yml は private なので除外、テンプレ (*.yml.example) のみ含める
+.config/tmuxinator/*.yml
+!.config/tmuxinator/*.yml.example
+
+# Claude Code
+.claude/
+.config/nvim/.claude/
+

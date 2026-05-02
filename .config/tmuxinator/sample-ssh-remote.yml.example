@@ -1,0 +1,30 @@
+---
+# tmuxinator サンプル: SSH リモート開発
+# 使い方:
+#   1. このファイルをコピー: cp sample-ssh-remote.yml.example my-remote.yml
+#   2. ssh -t <HOST> "cd <PATH> && bash" の HOST と PATH を書き換え
+#   3. ~/.ssh/config に HOST のショートエイリアスを定義しておくと楽
+#   4. tmuxinator start my-remote （または mux my-remote）
+#
+# Window 構成:
+#   editor - リモートホストでシェル起動
+#   claude - リモートホストで Claude CLI 起動
+#   logs   - ログディレクトリ + tail -f （main-vertical 分割）
+
+name: my-remote
+root: ~/
+
+windows:
+  - editor:
+      panes:
+        - ssh -t my-host "cd ~/workspace/my-app && bash"
+
+  - claude:
+      panes:
+        - ssh -t my-host "cd ~/workspace/my-app && ~/.local/bin/claude"
+
+  - logs:
+      layout: main-vertical
+      panes:
+        - ssh -t my-host "cd ~/workspace/my-app/logs && ls -lt | head -n 20 && bash"
+        - ssh -t my-host "tail -f ~/workspace/my-app/logs/app.log"

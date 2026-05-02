@@ -1,7 +1,3 @@
-local discipline = require("craftzdog.discipline")
-
-discipline.cowboy()
-
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 
@@ -42,6 +38,7 @@ keymap.set("n", "dw", 'vb"_d')
 
 -- Select all
 keymap.set("n", "<C-a>", "gg<S-v>G")
+keymap.set("v", ",", "<Esc>ggVG")
 
 -- Save with root permission (not working for now)
 --vim.api.nvim_create_user_command('W', 'w !sudo tee > /dev/null %', {})
@@ -88,3 +85,9 @@ end)
 vim.api.nvim_create_user_command("ToggleAutoformat", function()
 	require("craftzdog.lsp").toggleAutoformat()
 end, {})
+
+keymap.set("n", "<leader>tf", function()
+	vim.b.autoformat = not vim.b.autoformat
+	local state = vim.b.autoformat and "ON" or "OFF"
+	vim.notify("Autoformat: " .. state, vim.log.levels.INFO, { title = "Conform" })
+end, { desc = "Toggle autoformat for this buffer" })

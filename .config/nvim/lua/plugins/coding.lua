@@ -8,7 +8,7 @@ return {
 
 	-- Go forward/backward with square brackets
 	{
-		"echasnovski/mini.bracketed",
+		"nvim-mini/mini.bracketed",
 		event = "BufReadPost",
 		config = function()
 			local bracketed = require("mini.bracketed")
@@ -45,25 +45,42 @@ return {
 		end,
 	},
 
-	-- copilot
+	-- ① GitHub Copilot 本体（Lua 実装）
 	{
 		"zbirenbaum/copilot.lua",
+		event = "InsertEnter",
+		cmd = "Copilot",
 		opts = {
-			suggestion = {
-				auto_trigger = true,
-				keymap = {
-					accept = "<C-l>",
-					accept_word = "<M-l>",
-					accept_line = "<M-S-l>",
-					next = "<M-]>",
-					prev = "<M-[>",
-					dismiss = "<C-]>",
-				},
-			},
-			filetypes = {
-				markdown = true,
-				help = true,
-			},
+			suggestion = { enabled = false },
+			panel = { enabled = false },
 		},
 	},
+	-- ② blink.cmp 用 Copilot ソース
+	{
+		"giuxtaposition/blink-cmp-copilot",
+		lazy = true,
+		event = "InsertEnter",
+		dependencies = { "zbirenbaum/copilot.lua" },
+	},
+	-- copilot
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	opts = {
+	-- 		suggestion = {
+	-- 			auto_trigger = true,
+	-- 			keymap = {
+	-- 				accept = "<C-,>",
+	-- 				accept_word = "<M-l>",
+	-- 				accept_line = "<M-S-l>",
+	-- 				next = "<M-]>",
+	-- 				prev = "<M-[>",
+	-- 				dismiss = "<C-]>",
+	-- 			},
+	-- 		},
+	-- 		filetypes = {
+	-- 			markdown = true,
+	-- 			help = true,
+	-- 		},
+	-- 	},
+	-- },
 }

@@ -1,0 +1,49 @@
+---
+# tmuxinator サンプル: ローカルプロジェクト（フリーランスシステム型）
+# 使い方:
+#   1. このファイルをコピー: cp sample-local-project.yml.example my-project.yml
+#   2. name と root を書き換え
+#   3. tmuxinator start my-project （または mux my-project）
+#
+# Window 構成:
+#   editor    - 編集メイン（プロジェクトルート + プロンプト置き場）
+#   ai-claude - AI 出力ワークスペース
+#   backend   - バックエンドサーバー用
+#   frontend  - フロントエンド dev server 用
+#   logs      - ログ確認用
+#   notion    - Notion エクスポート閲覧用
+
+name: my-project
+root: ~/path/to/my-project
+startup_window: editor
+
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - cd ~/path/to/my-project && clear
+        - cd ~/path/to/my-project/00_prompts_generated && clear
+
+  - ai-claude:
+      panes:
+        - 'cd ~/path/to/my-project/01_ai_outputs && echo "🤖 AI Workspace" && echo "Claude CLI: claude chat" && clear'
+
+  - backend:
+      root: ~/path/to/my-project/02_deliverables/source_code/backend
+      panes:
+        - '# Backend server will run here'
+        - '# e.g., poetry run uvicorn app.main:app --reload'
+
+  - frontend:
+      root: ~/path/to/my-project/02_deliverables/source_code/frontend
+      panes:
+        - '# Frontend dev server will run here'
+        - '# e.g., npm run dev'
+
+  - logs:
+      panes:
+        - cd ~/path/to/my-project/01_ai_outputs/logs && clear
+
+  - notion:
+      panes:
+        - cd ~/path/to/my-project/04_notion_exports && clear
