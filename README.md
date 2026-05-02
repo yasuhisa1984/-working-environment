@@ -8,6 +8,7 @@
 
 - **Neovim** — LazyVim ベース、Code Craft カスタマイズ
 - **Fish shell** — Tide テーマ + Fisher プラグイン群
+- **tmux + tmuxinator** — プロジェクトごとのセッションテンプレ
 - **Git** — alias / hist / hub 連携
 - **PowerShell** — Oh My Posh + PSFzf（Windows 用）
 - **Ghostty / lazygit / kitty** などのツール設定
@@ -39,6 +40,7 @@
 - [Eza](https://github.com/eza-community/eza) — `ls` 置き換え
 - [ghq](https://github.com/x-motemen/ghq) — リポジトリオーガナイザ
 - [fzf](https://github.com/PatrickF1/fzf.fish) — インタラクティブ絞り込み
+- [tmuxinator](https://github.com/tmuxinator/tmuxinator) — tmux セッションテンプレ管理（[使い方](./.config/tmuxinator/README.md)）
 
 ## PowerShell setup (Windows)
 
