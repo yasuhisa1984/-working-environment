@@ -33,4 +33,7 @@ return {
 			colorscheme = "tokyonight-night",
 		},
 	},
+
+	-- 使用しないカラースキームは無効化
+	{ "catppuccin/nvim", enabled = false },
 }

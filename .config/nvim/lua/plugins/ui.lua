@@ -53,12 +53,8 @@ return {
 		end,
 	},
 
-	{
-		"rcarriga/nvim-notify",
-		opts = {
-			timeout = 5000,
-		},
-	},
+	-- snacks.notifier に統一するため nvim-notify は無効化
+	{ "rcarriga/nvim-notify", enabled = false },
 
 	{
 		"snacks.nvim",

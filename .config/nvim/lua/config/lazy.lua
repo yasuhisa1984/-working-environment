@@ -17,8 +17,8 @@ require("lazy").setup({
 		{
 			"LazyVim/LazyVim",
 			import = "lazyvim.plugins",
+			-- colorscheme は lua/plugins/colorscheme.lua で指定（tokyonight-night）
 			opts = {
-				colorscheme = "solarized-osaka",
 				news = {
 					lazyvim = true,
 					neovim = true,
@@ -31,7 +31,7 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.lang.typescript" },
 		{ import = "lazyvim.plugins.extras.lang.json" },
 		-- { import = "lazyvim.plugins.extras.lang.markdown" },
-		{ import = "lazyvim.plugins.extras.lang.rust" },
+		-- { import = "lazyvim.plugins.extras.lang.rust" },  -- 使用しないため無効化
 		{ import = "lazyvim.plugins.extras.lang.tailwind" },
 		-- { import = "lazyvim.plugins.extras.dap.core" },
 		-- { import = "lazyvim.plugins.extras.vscode" },
