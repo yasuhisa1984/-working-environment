@@ -71,3 +71,7 @@ Pods/
 # Tmux
 .config/tmux/plugins
 
+# Claude Code
+.claude/
+.config/nvim/.claude/
+

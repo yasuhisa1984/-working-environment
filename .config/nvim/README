@@ -1,6 +1,6 @@
 # PHP を K&R スタイル（{ を同じ行）で自動整形する設定手順
 
-LazyVim（Craftzdog構成ベース） + php-cs-fixer + conform.nvim で  
+LazyVim + php-cs-fixer + conform.nvim で
 **クラス/メソッドの `{` を同じ行に** 揃える最小構成。
 
 ---
@@ -8,7 +8,7 @@ LazyVim（Craftzdog構成ベース） + php-cs-fixer + conform.nvim で
 ## 1. 前提条件
 
 - PHP / Composer がインストール済み
-- Neovim + LazyVim 環境（craftzdog/dotfiles-public ベース）
+- Neovim + LazyVim 環境
 
 ---
 

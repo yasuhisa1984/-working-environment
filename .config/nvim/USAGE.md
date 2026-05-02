@@ -1,6 +1,6 @@
 # Neovim (LazyVim) 操作ガイド
 
-craftzdog dotfiles ベースの LazyVim 環境。
+LazyVim ベースに Code Craft カスタマイズを加えた個人 Neovim 環境。
 Leader キーは `<Space>`。
 
 ---
@@ -8,19 +8,23 @@ Leader キーは `<Space>`。
 ## 目次
 
 1. [基本移動・編集](#基本移動編集)
-2. [ウィンドウ・タブ操作](#ウィンドウタブ操作)
-3. [ファイル検索・ナビゲーション (Telescope)](#ファイル検索ナビゲーション-telescope)
-4. [ファイルエクスプローラー (Oil.nvim)](#ファイルエクスプローラー-oilnvim)
-5. [LSP (コード補完・定義ジャンプ)](#lsp-コード補完定義ジャンプ)
-6. [補完 (blink.cmp)](#補完-blinkcmp)
-7. [AI アシスタント (Copilot)](#ai-アシスタント-copilot)
-8. [Git 操作](#git-操作)
-9. [UI プラグイン](#ui-プラグイン)
-10. [編集支援プラグイン](#編集支援プラグイン)
-11. [便利機能](#便利機能)
-12. [対応言語](#対応言語)
-13. [エラー・ログ調査ツール](#エラーログ調査ツール)
-14. [カスタマイズの仕組み](#カスタマイズの仕組み)
+2. [高速移動・ジャンプ (flash.nvim)](#高速移動ジャンプ-flashnvim)
+3. [ファイル切替 (harpoon)](#ファイル切替-harpoon)
+4. [ウィンドウ・タブ操作](#ウィンドウタブ操作)
+5. [ファイル検索・ナビゲーション (Telescope)](#ファイル検索ナビゲーション-telescope)
+6. [ファイルエクスプローラー (Oil.nvim)](#ファイルエクスプローラー-oilnvim)
+7. [折りたたみ (nvim-ufo)](#折りたたみ-nvim-ufo)
+8. [LSP (コード補完・定義ジャンプ)](#lsp-コード補完定義ジャンプ)
+9. [補完 (blink.cmp)](#補完-blinkcmp)
+10. [AI アシスタント (Copilot)](#ai-アシスタント-copilot)
+11. [Git 操作](#git-操作)
+12. [UI プラグイン](#ui-プラグイン)
+13. [編集支援プラグイン](#編集支援プラグイン)
+14. [Vim 矯正ギプス (hardtime / precognition)](#vim-矯正ギプス-hardtime--precognition)
+15. [便利機能](#便利機能)
+16. [対応言語](#対応言語)
+17. [エラー・ログ調査ツール](#エラーログ調査ツール)
+18. [カスタマイズの仕組み](#カスタマイズの仕組み)
 
 ---
 
@@ -63,6 +67,7 @@ Leader キーは `<Space>`。
 | 変数・関数名の変更 | `<Space>cr`（LSP リネーム） |
 | ファイル内の文字列置換 | `:%s/old/new/gc` |
 | プロジェクト全体の置換 | `<Space>sr`（grug-far） |
+| カーソル下の単語をプロジェクト全体置換 | `<Space>sw`（grug-far + プリフィル） |
 | 数箇所だけ手動で置換 | `*` → `cgn` → Esc → `.` で繰り返し |
 
 #### cgn パターン（おすすめ）
@@ -90,9 +95,21 @@ Leader キーは `<Space>`。
 
 #### grug-far.nvim（プロジェクト全体の置換）
 
+| キー | 動作 |
+|---|---|
+| `<Space>sr` | grug-far 起動（カレントバッファの拡張子で `*.ext` を自動プリフィル） |
+| `<Space>sw` | カーソル下の単語をプリフィルして起動（一括リネーム用） |
+| `:GrugFar` | コマンドで起動 |
+| `:GrugFarWithin` | 選択範囲のみ対象に起動 |
+
+#### grug-far バッファ内の操作
+
 ```
-<Space>sr → 検索窓・置換窓・ファイル絞り込みを入力
-         → プレビューで確認 → 適用
+1. 専用バッファに「Search / Replace / Files Filter / Files include」セクションが並ぶ
+2. それぞれの行を普通のバッファ編集として書き換え
+3. 結果プレビューがリアルタイム更新される
+4. <localleader>r （= \r）で一括置換実行
+5. q で閉じる
 ```
 
 LSP が効かない文字列（クラス名、設定値、コメントなど）の一括置換に最適。
@@ -112,6 +129,50 @@ dial.nvim による拡張：日付 (`YYYY/MM/DD`)、`true`/`false`、セマン�
 |------|------|
 | `<Space>o` | 下に空行（インデントなし） |
 | `<Space>O` | 上に空行（インデントなし） |
+
+---
+
+## 高速移動・ジャンプ (flash.nvim)
+
+`/` 検索や `f`/`t` モーションを大幅に置き換える、画面内 2 文字ジャンプ。
+
+| キー | モード | 動作 |
+|------|------|------|
+| `s` | n / x / o | 2 文字（or 任意キー）で画面内の任意位置にジャンプ |
+| `S` | n / x / o | **Treesitter モード**：関数・if 文・式単位で選択ジャンプ |
+| `r` | o | Remote Flash（オペレータ + 別の場所のテキスト操作） |
+
+### 使いどころ
+
+- `s` + 移動先の最初の 2 文字 → 表示されるラベルを押すと一瞬でジャンプ。`hjkl` 連打や `/word` の 8 割を置き換える。
+- `vS` で「画面内の関数を 1 つ選択」が可能（Treesitter ノード単位）。
+- `dap` の代わりに `dS` で「ある関数まるごと削除」など、操作と組み合わせやすい。
+
+---
+
+## ファイル切替 (harpoon)
+
+「いま触っているファイル 4〜5 個を**固定して秒で切替**」専用プラグイン（ThePrimeagen 製・harpoon2）。
+**Telescope** はプロジェクト全体探索、**harpoon** は固定の主役ファイル切替、と使い分ける。
+
+| キー | 動作 |
+|------|------|
+| `<Space>ha` | 現在ファイルを harpoon リストに追加 |
+| `<Space>hh` | クイックメニュー（リスト一覧と並べ替え） |
+| `<Space>1` | 1 番目のファイルへ |
+| `<Space>2` | 2 番目のファイルへ |
+| `<Space>3` | 3 番目のファイルへ |
+| `<Space>4` | 4 番目のファイルへ |
+
+### 典型的なワークフロー
+
+```
+1. controller / service / model / test を順に開く
+2. それぞれで <Space>ha でマーク
+3. 以降は <Space>1〜4 でノールック切替
+```
+
+`<Space>hh` のメニュー上で行を削除・並び替えするとリストが更新される（バッファ編集で OK）。
 
 ---
 
@@ -201,6 +262,27 @@ dial.nvim による拡張：日付 (`YYYY/MM/DD`)、`true`/`false`、セマン�
 
 ---
 
+## 折りたたみ (nvim-ufo)
+
+Treesitter / LSP / インデント由来の正確な折りたたみ。標準 fold より圧倒的に使える。
+
+| キー | 動作 |
+|------|------|
+| `zR` | すべての折りたたみを開く |
+| `zM` | すべての折りたたみを閉じる |
+| `za` | カーソル下の fold をトグル（Vim 標準） |
+| `zo` / `zc` | 開く / 閉じる（Vim 標準） |
+
+### 設定
+
+- `foldcolumn = 1`：左端に fold マーカー列を表示
+- `foldlevel / foldlevelstart = 99`：起動時はデフォルトで全展開
+- provider は **treesitter → indent** の順で fallback
+
+1000 行を超えるファイルで関数単位に畳むと体感生産性が大きく変わる。
+
+---
+
 ## LSP (コード補完・定義ジャンプ)
 
 ### コードナビゲーション
@@ -245,6 +327,14 @@ TypeScript や Lua で型情報をインラインで表示：
 | PHP | php-cs-fixer（`~/.composer/vendor/bin/php-cs-fixer`） |
 | Lua | stylua |
 | Rust | rustfmt |
+
+### lsp_signature.nvim（関数引数のヒント）
+
+挿入モードで関数を書いている最中、**カーソル位置の引数がハイライトされた**シグネチャがフロート表示される。
+
+- `vim.lsp.buf.signature_help()`（`gK`）の自動表示版。手動で呼び出さなくても、引数を打つたびに常に最新が出る
+- 現在の引数が太字になるので、長い引数リスト（TS / Python）で特に効く
+- `border = "rounded"`、カーソル行の上に出る設定（`floating_window_above_cur_line = true`）
 
 ### Mason (LSP/ツールのインストーラー)
 
@@ -319,6 +409,23 @@ LazyVim デフォルトの nvim-cmp ではなく blink.cmp を使用。高速で
 | `]h` / `[h` | 次/前の変更箇所へジャンプ |
 | 行番号横のマーク | 追加（緑）/ 変更（青）/ 削除（赤）を表示 |
 
+### diffview.nvim（PR レビュー用 Git UI）
+
+コミット間 / ブランチ間の**全ファイル差分**を Neovim 内に開く。PR レビューが Neovim で完結する。
+
+| キー | 動作 |
+|------|------|
+| `<Space>gd` | `:DiffviewOpen`（作業ツリーの差分を開く） |
+| `<Space>gh` | 現在ファイルのコミット履歴 |
+| `<Space>gH` | リポジトリ全体のコミット履歴 |
+
+```vim
+:DiffviewOpen origin/main      " main との差分を全部見る
+:DiffviewOpen HEAD~3           " 3 コミット前との差分
+:DiffviewClose                 " 閉じる
+:DiffviewFileHistory %         " 現在ファイルの全履歴（GitHub Blame ビュー相当）
+```
+
 ### lazygit（ターミナル TUI）
 
 プロジェクトディレクトリで `lazygit` と打つだけで起動。差分確認・ステージ・コミットが爆速。
@@ -375,7 +482,17 @@ lazygit
 
 ### snacks.nvim (ダッシュボード)
 
-起動時に DEVALIS ロゴのダッシュボードを表示。
+起動時に **Code Craft** ロゴのダッシュボードを表示。
+
+### render-markdown.nvim（Markdown インライン整形）
+
+Markdown ファイルを開いた瞬間、**編集中のバッファ内**で見出し・リスト・コードブロックが装飾表示される。
+Obsidian / Logseq に近い見た目。プレビュー別ウィンドウは不要。
+
+- 見出し: `◉ ○ ✸ ✿`（h1〜h4）
+- リスト: `● ○ ◆ ◇`
+- コードブロック: ブロック表示（左パディング 2 / 右パディング 4）
+- `ft = "markdown"` で起動するので Markdown を開かない限りロードされない
 
 ### zen-mode.nvim (集中モード)
 
@@ -427,12 +544,56 @@ HTML/JSX で開きタグを入力すると閉じタグが自動挿入。タグ�
 
 `<Space>cr` でリネーム。入力中にバッファ内のすべての参照がリアルタイムでプレビュー変更される。
 
+### mini.move（行・選択ブロックの移動）
+
+VSCode の `Alt+↑↓` 相当。Neovim でもキー 1 つで行・選択ブロックを動かせる。
+
+| キー | モード | 動作 |
+|------|------|------|
+| `Alt + j` / `Alt + k` | n / x | 行（または選択ブロック）を下 / 上に移動 |
+| `Alt + h` / `Alt + l` | x | 選択ブロックを左 / 右に移動 |
+
+リファクタ時、「この 4 行を関数の前に出したい」が秒で終わる。
+
+> ターミナル側で `Alt` キーが奪われていると効かないことがあります（kitty / Alacritty / WezTerm はデフォルトで OK）。
+
 ### Treesitter
 
 構文解析エンジン。シンタックスハイライト・テキストオブジェクト・折りたたみなどの基盤。
 以下の言語パーサーがインストール済み：
 
 astro, cmake, cpp, css, fish, gitignore, go, graphql, http, java, php, rust, scss, sql, svelte, markdown (MDX 含む)
+
+---
+
+## Vim 矯正ギプス (hardtime / precognition)
+
+「LazyVim をなんとなく使っている」状態から、**Vim 本来のモーションを身体に入れる**ためのトレーニング系プラグイン。
+2 つセットで使うのが鉄板。
+
+### hardtime.nvim（悪い癖の警告）
+
+`hjkl` の 3 回以上連打を検知すると「もっと効率的なキーがあるよ」とヒントを出す。
+
+| 設定 | 値 |
+|---|---|
+| `max_count` | `3`（連打許容回数） |
+| `restriction_mode` | `"hint"`（警告のみ。`"block"` にすると即停止） |
+| `disable_mouse` | `false`（マウスは無効化しない） |
+
+最初は鬱陶しいが、2 週間で `5j` `}` `gg` `<C-d>` などの効率的な移動が体に染み込む。
+中級者になったら `restriction_mode = "block"` に上げると効果絶大。
+
+### precognition.nvim（モーション提案の常時表示）
+
+カーソル位置から「次にどう動けるか（`w` `b` `e` `^` `$` ...）」を画面上に常時表示する。
+
+- `startVisible = true`：起動時から表示
+- 鬱陶しくなったら `startVisible = false` に変更し、`:Precognition toggle` で必要時だけ表示
+- hardtime と組み合わせるのが効果的：
+  - **precognition** = 「どこに飛べるかを教える」
+  - **hardtime** = 「飛ばないことを警告する」
+  - → vim 言語が体に入る最短経路
 
 ---
 
@@ -452,7 +613,8 @@ mini.hipatterns により、コード中の `hsl(210, 50%, 60%)` のような値
 
 ### grug-far（検索・置換）
 
-プロジェクト全体の検索・置換。LazyVim のデフォルトキーで起動。
+プロジェクト全体の検索・置換。`<Space>sr` で起動、`<Space>sw` でカーソル下の単語をプリフィル起動。
+詳細は [検索・置換テクニック](#検索置換テクニック) を参照。
 
 ### Trouble（診断一覧）
 
@@ -718,9 +880,26 @@ LazyVim のデフォルトを上書きするには、同じプラグイン名で
 
 ### 無効化されているプラグイン
 
-- `flash.nvim` — モーションプラグイン（無効）
-- `render-markdown.nvim` — マークダウンレンダリング（無効）
 - `mini-files` — ファイルエクスプローラー（Oil.nvim を使用）
 - `project` — プロジェクト管理
 - `yanky` — ヤンク拡張
 - `nvim-dap` — デバッガー
+
+### 2026 年トレンド取り込みで追加したプラグイン
+
+[codecraft1129.com の LazyVim 厳選 17 選](https://codecraft1129.com/posts/lazyvim-essential-plugins-curated-2026/)を参考に、案 A（軽量スタート）として導入：
+
+| プラグイン | 役割 | キー |
+|---|---|---|
+| `flash.nvim`（再有効化） | 2 文字ジャンプ + Treesitter ノード選択 | `s` / `S` / `r` |
+| `harpoon` (v2) | 4 ファイル即切替 | `<Space>ha` / `<Space>hh` / `<Space>1〜4` |
+| `mini.move` | 行・選択ブロック移動 | `Alt + h/j/k/l` |
+| `nvim-ufo` | Treesitter ベースの折りたたみ | `zR` / `zM` |
+| `lsp_signature.nvim` | 関数引数の自動シグネチャ | InsertEnter で自動表示 |
+| `hardtime.nvim` | hjkl 連打警告（hint モード） | 自動 |
+| `precognition.nvim` | モーション提案の常時表示 | `:Precognition toggle` |
+| `diffview.nvim` | PR レビュー用 git UI | `<Space>gd` / `<Space>gh` / `<Space>gH` |
+| `render-markdown.nvim`（再有効化） | Markdown インライン装飾 | Markdown ファイルを開くだけ |
+
+> AI 系（avante / codecompanion）は CopilotChat と被るためスキップ。
+> Neogit も lazygit と被るためスキップ。
