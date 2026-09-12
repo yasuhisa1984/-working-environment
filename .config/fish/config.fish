@@ -51,8 +51,13 @@ if test -f $LOCAL_CONFIG
 end
 set -gx PATH /opt/homebrew/bin /usr/local/bin $PATH
 
-set -x NVM_DIR $HOME/.nvm
-bass source $NVM_DIR/nvm.sh --no-use ';' nvm use default
+# nvm は使っていない (node は Homebrew 版)。~/.nvm も存在しないため、
+# この2行は毎回 bass(bash) を起動して失敗し、エラー2行を出力に混ぜていた。
+# nvim の vim.fn.system() はこの fish を経由するので、外部コマンドが全部遅くなる。
+# nvm を使う日が来たら、存在チェックで囲って復活させること:
+#   if test -f $HOME/.nvm/nvm.sh
+#       bass source $HOME/.nvm/nvm.sh --no-use ';' nvm use default
+#   end
 
 # Auto-launch zellij on iTerm2
 if status is-interactive; and not set -q ZELLIJ
@@ -66,3 +71,8 @@ function __wezterm_cwd --on-variable PWD
     printf "\e]7;file://%s%s\e\\" (hostname) $PWD
 end
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/yasuhisa/.lmstudio/bin
+# End of LM Studio CLI section
+

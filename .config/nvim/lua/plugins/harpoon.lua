@@ -48,6 +48,27 @@ return {
 		},
 	},
 	config = function()
-		require("harpoon"):setup()
+		local branchkey = require("util.branchkey")
+		require("harpoon"):setup({
+			settings = {
+				-- ★ブランチごとに別のリストにする。
+				-- 既定は cwd だけなので、ブランチを切り替えても同じ4本が出てくる。
+				-- cwd + ブランチ名にすると <leader>1..4 がブランチ単位で切り替わる。
+				key = function()
+					return branchkey.key()
+				end,
+			},
+		})
+
+		-- <leader>gb : Telescope でブランチを選び、移動して作業位置まで復元する
+		vim.keymap.set("n", "<leader>gb", function()
+			require("util.branch_jump").pick()
+		end, { desc = "Branch: 選んで移動 + 作業位置を復元" })
+
+		-- 今どのブランチのリストを見ているかを出す (自慢用)
+		vim.keymap.set("n", "<leader>hb", function()
+			local b = branchkey.branch()
+			vim.notify(b and ("harpoon: " .. b) or "harpoon: git 管理外 (cwd 単位)")
+		end, { desc = "Harpoon: 今のリストのブランチ" })
 	end,
 }

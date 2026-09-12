@@ -5,8 +5,7 @@ return {
 		opts = function(_, opts)
 			vim.list_extend(opts.ensure_installed, {
 				"stylua",
-				"selene",
-				"luacheck",
+				"selene", -- Lua linter。luacheck は luarocks 必須で入らないので使わない
 				"shellcheck",
 				"shfmt",
 				"tailwindcss-language-server",
